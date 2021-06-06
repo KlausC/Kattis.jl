@@ -25,9 +25,7 @@ const Folds{T} = ArrayOrTuple{Fold{T}}
 
 function evaluate(shape::Shape{T}, folds, probe::Point{T}) where T
     if isempty(folds)
-        x = Int(inshape(probe, shape))
-        println("count $probe in $shape returns $x")
-        x
+        Int(inshape(probe, shape))
     else
         fold = first(folds)
         shape1, shape2 = split_and_fold(shape, fold)
@@ -143,4 +141,6 @@ function intersect(x0::Point, x1::Point, fold::Fold)
     Point(a * dx.x + x0.x, a * dx.y + x0.y)
 end 
 
+
+include("zeroone.jl")
 end # module

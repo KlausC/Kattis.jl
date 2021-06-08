@@ -1,2 +1,7 @@
-/Manifest.toml
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+*.so
+deps/deps.jl
+Manifest.toml
 .vscode

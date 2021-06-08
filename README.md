@@ -2,6 +2,9 @@
 
 [![Build Status][gha-img]][gha-url]     [![Coverage Status][codecov-img]][codecov-url]
 
+Origami: https://open.kattis.com/problems/origami
+
+ZeroOne: https://open.kattis.com/problems/sequences
 
 [gha-img]: https://github.com/KlausC/Kattis.jl/workflows/CI/badge.svg
 [gha-url]: https://github.com/KlausC/Kattis.jl/actions?query=workflow%3ACI

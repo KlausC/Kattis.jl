@@ -13,7 +13,7 @@ struct Point{T}
         R = typeof(R(1) / R(1))
         new{R}(convert(R, x), convert(R, y))
     end
-    Point{T}(x::T, y::T) where T = new{T}(x, y)
+    Point{S}(x::T, y::T) where {S,T} = Point(convert(S, x), convert(S, y))
 end
 import Base: -
 -(a::Point, b::Point) = Point(a.x - b.x, a.y - b.y)

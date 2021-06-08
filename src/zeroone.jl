@@ -1,3 +1,4 @@
+module ZeroOne
 
 export zeroone
 
@@ -63,3 +64,5 @@ function zeroone_compose(p::Integer, t::Tuple...)
     end
     o1, c, b
 end
+
+end # module

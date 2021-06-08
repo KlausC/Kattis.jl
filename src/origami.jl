@@ -142,5 +142,4 @@ function intersect(x0::Point, x1::Point, fold::Fold)
 end 
 
 
-include("zeroone.jl")
 end # module

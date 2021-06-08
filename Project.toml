@@ -1,6 +1,6 @@
-name = "Origami"
+name = "Kattis"
 uuid = "55e4cf0e-6112-4b28-a48e-b08a54411acb"
-authors = ["Klaus Crusius <klaus.crusius@web.de> and contributors"]
+authors = ["Klaus Crusius <klaus.crusius@web.de>"]
 version = "0.1.0"
 
 [compat]

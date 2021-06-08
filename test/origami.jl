@@ -1,9 +1,10 @@
 using .Origami
-using .Origami: evaluate
 
+const evaluate = Origami.evaluate
 const P = Point{Float64}
 
 @testset "Origami" begin
+    @test isempty(Origami.normal!([P(0,0), P(1,1)]))  
     @test evaluate(P[],[], P(0,0)) == 0
     shape = [P(0,0), P(0,1000), P(1000,1000), P(1000,0), P(0,0)]
     @test evaluate(shape, [], P(1,1)) == 1

@@ -1,9 +1,10 @@
 module Kattis
 
-export Origami
-export ZeroOne
+export Origam
 
 include("origami.jl")
 include("zeroone.jl")
+include("linearprog.jl")
+include("maxflow.jl")
 
 end

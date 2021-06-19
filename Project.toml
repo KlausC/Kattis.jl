@@ -3,6 +3,10 @@ uuid = "55e4cf0e-6112-4b28-a48e-b08a54411acb"
 authors = ["Klaus Crusius <klaus.crusius@web.de>"]
 version = "0.1.0"
 
+[deps]
+Clp = "e2554f3b-3117-50c0-817c-e040a3ddf72d"
+JuMP = "4076af6c-e467-56ae-b986-b466b2749572"
+
 [compat]
 julia = "1"
 

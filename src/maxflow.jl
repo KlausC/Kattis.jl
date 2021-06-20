@@ -45,27 +45,36 @@ function Graph(n, ii, jj, aa::AbstractVector{T}) where T
         node[i] = zeros(Int, 0)
         weight[i] = Vector{T}(undef, 0)
     end
+    kk = 0
     for k = 1:m
         i, j, a = ii[k], jj[k], aa[k]
         @assert 0 <= i < n
         @assert 0 <= j < n
-        push!(node[i+1], j)
-        push!(weight[i+1], a)
+        nodei = node[i+1]
+        weighti = weight[i+1]
+        ix = findfirst(isequal(j), nodei)
+        if ix === nothing
+            push!(nodei, j)
+            push!(weighti, a)
+        else
+            weighti[ix] += a
+        end
     end
     Graph(n, node, weight)
 end
 
 function main(io::IO...)
-    n, s, t, ii, jj, aa = read_data(io...)
-    f, graph = run(n, s, t, ii, jj, aa)
+    n, s, t, graph0 = read_data(io...)
+    print_results(n, 0, graph0)
+    f, graph = run(n, s, t, graph0)
     print_results(n, f, graph)
 end
 
-function run(n, s, t, ii, jj, aa)
+function run(n, s, t, graph::Graph{T}) where T
     @assert 0 <= s < n
     @assert 0 <= t < n
-    graph = Graph(n, ii, jj, aa)
-    akkug = Graph(n, similar(ii, 0), similar(jj, 0), similar(aa, 0))
+    graph = deepcopy(graph)
+    akkug = Graph(n, Int[], Int[], T[])
     sum = 0
     wp = bestpath(graph, s, t)
     while is_adding(wp, s, t)
@@ -94,7 +103,9 @@ function bestpath(graph::Graph{T}, s, t) where T
             break
         end
         for c in children(top, graph)
-            insert_sorted!(stack, c)
+            if is_eligible(c)
+                insert_sorted!(stack, c)
+            end
         end
     end
     res
@@ -103,6 +114,15 @@ end
 function is_adding(wp::WeightedPath, s, t)
     wp.path.id == t && !iszero(wp.cweight.weight)
 end
+
+is_eligible(wp::WeightedPath) = !is_cyclictop(wp.path)
+
+function is_cyclictop(p::Path)
+    ( p.next === nothing || p.next.next == nothing ) && return false
+    is_cyclictop(p.next, p.id)
+end
+is_cyclictop(::Nothing, id) = false
+is_cyclictop(p::Path, id) = p.id == id || is_cyclictop(p.next, id)
 
 sub!(g::Graph{T}, wp::WeightedPath{T}) where T = _add(g, -1, wp)
 add!(g::Graph{T}, wp::WeightedPath{T}) where T = _add(g, 1, wp)
@@ -123,10 +143,18 @@ function _add(g, s, t, w)
     node, weight = g.node[s+1], g.weight[s+1]
     k = findfirst(isequal(t), node)
     if k === nothing
-        push!(node, t)
-        push!(weight, w)
+        if !iszero(w)
+            push!(node, t)
+            push!(weight, w)
+        end
     else
-        weight[k] += w
+        nw = weight[k] + w
+        if iszero(nw)
+            deleteat!(node, k)
+            deleteat!(weight, k)
+        else
+            weight[k] = nw
+        end
     end
     nothing
 end
@@ -157,11 +185,22 @@ function insert_sorted!(awp::AbstractArray{WeightedPath{T}}, ix::Integer, wp::We
             end
         elseif wp.cweight < top.cweight
             insert!(awp, ix, wp)
+            delete_sorted!(awp, ix+1, wp)
         else
             insert_sorted!(awp, ix+1, wp)
         end
     end
     nothing
+end
+
+function delete_sorted!(awp::AbstractArray{WeightedPath{T}}, ix::Integer, wp::WeightedPath{T}) where T
+    ix > length(awp) && return
+    top = awp[ix]
+    if wp.path.id == top.path.id
+        deleteat!(awp, ix)
+    else
+        delete_sorted!(awp, ix+1, wp)
+    end
 end
 
 function combine_weights(w::T, pw::PathWeight{T}) where T
@@ -173,6 +212,7 @@ function Base.isless(a::PathWeight{T}, b::PathWeight{T}) where T
 end
 
 Base.isempty(s::Stack) = isempty(s.a)
+weight(g::Graph) = sum(sum.(g.weight))
 
 # utilities
 function read_data(io::IO=stdin)
@@ -185,10 +225,11 @@ function read_data(io::IO=stdin)
         jj[k] = j
         aa[k] = a
     end
-    n, s, t, ii, jj, aa
+    n, s, t, Graph(n, ii, jj, aa)
 end
 
 function print_results(n, f, g::Graph)
+    n = length(g.node)
     m = sum(length.(g.weight))
     println("$n $f $m")
     for s = 0:n-1

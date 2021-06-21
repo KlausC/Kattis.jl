@@ -1,3 +1,4 @@
+export LinearProg
 module LinearProg
 
 # solve Kattis problem "https://open.kattis.com/problems/maxflow" using linear optimization

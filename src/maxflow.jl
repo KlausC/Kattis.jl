@@ -1,4 +1,4 @@
-
+export MaxFlow
 module MaxFlow
 
 export Graph, PathWeight, Path, WeightedPath
@@ -63,11 +63,11 @@ function Graph(n, ii, jj, aa::AbstractVector{T}) where T
     Graph(n, node, weight)
 end
 
-function main(io::IO...)
-    n, s, t, graph0 = read_data(io...)
-    print_results(n, 0, graph0)
+function main(ioin::IO=stdin, ioout::IO=stdout)
+    n, s, t, graph0 = read_data(ioin)
+    # print_results(ioout, n, 0, graph0)
     f, graph = run(n, s, t, graph0)
-    print_results(n, f, graph)
+    print_results(ioout, n, f, graph)
 end
 
 function run(n, s, t, graph::Graph{T}) where T
@@ -228,17 +228,18 @@ function read_data(io::IO=stdin)
     n, s, t, Graph(n, ii, jj, aa)
 end
 
-function print_results(n, f, g::Graph)
+function print_results(io::IO, n, f, g::Graph)
     n = length(g.node)
     m = sum(length.(g.weight))
-    println("$n $f $m")
+    println(io, "$n $f $m")
     for s = 0:n-1
         node = g.node[s+1]
         weight = g.weight[s+1]
-        for k = 1:length(node)
-            t = node[k]
-            w = weight[k]
-            println("$s $t $w")
+        perm = sortperm(node)
+        for k = keys(perm)
+            t = node[perm[k]]
+            w = weight[perm[k]]
+            println(io, "$s $t $w")
         end
     end
 end

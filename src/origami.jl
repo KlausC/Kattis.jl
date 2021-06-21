@@ -1,3 +1,4 @@
+export Origami
 module Origami
 
 export evaluate, Point, Fold

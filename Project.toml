@@ -9,6 +9,7 @@ Clp = "e2554f3b-3117-50c0-817c-e040a3ddf72d"
 JuMP = "4076af6c-e467-56ae-b986-b466b2749572"
 
 [compat]
+ChannelBuffers = "0.2"
 Clp = "0.8"
 JuMP = "0.21"
 julia = "1"
